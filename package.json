@@ -1,5 +1,5 @@
 {
-  "name": "pandajs",
+  "name": "@commaai/pandajs",
   "version": "0.1.0",
   "description": "JavaScript interface for communicating with Panda devices.",
   "main": "src/index.js",

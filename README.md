@@ -2,9 +2,9 @@
 Interract with your [Panda OBD-II Dongle](https://shop.comma.ai/products/panda-obd-ii-dongle) from JavaScript.
 
 Support
- [x] Browser
- [ ] React Native
- [ ] Node
+ * [x] Browser
+ * [ ] React Native
+ * [ ] Node
 
 ## Installation
 `npm i --save pandajs`

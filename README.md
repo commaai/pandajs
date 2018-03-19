@@ -35,7 +35,7 @@ panda.pause();
 panda.resume();
 
 // close connects and take everything down
-panda.close();
+panda.disconnect();
 ```
 
 ## API

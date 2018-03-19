@@ -50,7 +50,24 @@ export default class Panda {
       index: 0
     };
     try {
-      let data = await this.device.controlTransferIn(controlParams, 13);
+      let buf = await this.device.controlTransferIn(controlParams, 13);
+      let voltage = buf.readUInt32LE(0);
+      let current = buf.readUInt32LE(4);
+      let isStarted = buf.readInt8(8) === 1;
+      let controlsAreAllowed = buf.readInt8(9) === 1;
+      let isGasInterceptorDetector = buf.readInt8(10) === 1;
+      let isStartSignalDetected = buf.readInt8(11) === 1;
+      let isStartedAlt = buf.readInt8(12) === 1;
+
+      return {
+        voltage,
+        current,
+        isStarted,
+        controlsAreAllowed,
+        isGasInterceptorDetector,
+        isStartSignalDetected,
+        isStartedAlt
+      };
     } catch (err) {
       ErrorEvent.broadcast(this, { event: 'Panda.health failed', error: err });
     }

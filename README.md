@@ -7,15 +7,15 @@ Support
  * [ ] Node
 
 ## Installation
-`npm i --save pandajs`
+`npm i --save @commaai/pandajs`
 
 or
 
-`yarn add pandajs`
+`yarn add @commaai/pandajs`
 
 ## Usage
 ```js
-import Panda from 'pandajs';
+import Panda from '@commaai/pandajs';
 
 // create instance
 var panda = new Panda();

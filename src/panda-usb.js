@@ -1,6 +1,6 @@
 import PandaWebUSB from './impl/browser';
 import PandaNodeUSB from './impl/node';
-import PandaMock from './mock';
+import PandaMock from './impl/mock';
 
 export default function PandaUSB (options) {
   if (require('is-browser')) {

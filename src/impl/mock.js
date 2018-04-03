@@ -18,6 +18,7 @@ export default class MockPanda {
   async connect() {
     await wait(100);
     ConnectEvent.broadcast(this, '123345123');
+    return '123345123'
   }
 
   async disconnect() {

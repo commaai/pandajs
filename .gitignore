@@ -44,3 +44,4 @@ __pycache__
 py/dist/
 .test-env
 py/build/
+/lib/

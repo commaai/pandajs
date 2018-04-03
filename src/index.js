@@ -126,9 +126,10 @@ export default class Panda {
     ConnectEvent.broadcast(this, usbId);
   }
   disconnectHandler() {
+    const previousConnection = this.connected;
     this.connected = false;
     this.paused = true;
-    DisconnectEvent.broadcast(this, usbId);
+    DisconnectEvent.broadcast(this, previousConnection);
   }
 
   // message queueing and flushing

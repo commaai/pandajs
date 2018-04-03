@@ -3,8 +3,8 @@ Interract with your [Panda OBD-II Dongle](https://shop.comma.ai/products/panda-o
 
 Support
  * [x] Browser
+ * [x] Node
  * [ ] React Native
- * [ ] Node
 
 ## Installation
 `npm i --save @commaai/pandajs`
@@ -44,7 +44,7 @@ panda.disconnect();
 Creates a new Panda instance
 
 * `options` *optional*
-  * `selectDevice`: (*optional* `function(devices, callback)`) A user defined function for selecting which available device to use, parameters are an array of discovered devices and a callback function. The method can either return the desired device, return a promise, or use the callback function. There is no timeout for this method, so make sure it eventually does one of those three things.
+  * `selectDevice`: (*optional* `function(devices, callback)`) A user defined function for selecting which available device to use, parameters are an array of discovered devices and a callback function. The method can either return the desired device, return a promise, or use the callback function. There is no timeout for this method, so make sure it eventually does one of those three things. *This option does nothing in browser mode since webusb has it's own UI for selecting the device.*
 
 ### Methods
 #### `Panda.connect()` -> `Promise: string`
@@ -113,7 +113,7 @@ Register a handler to run when successfully connecting to a Panda device. Return
 * `listener`: (*required*, `function (usbId)`) Handler to call when connected
   * `usbId`: (string) The ID of the USB device connected to.
 
-#### `Panda.onConnect(listener)` -> `function`
+#### `Panda.onDisconnect(listener)` -> `function`
 Register a handler to run when disconnecting from a Panda device. Returns an `unlisten` function that will disable the listener when called.
 
 * `listener`: (*required*, `function (usbId)`) Handler to call when disconnected

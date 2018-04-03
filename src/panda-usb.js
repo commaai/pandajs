@@ -1,16 +1,16 @@
-import PandaWebUSB from './impl/browser';
-import PandaNodeUSB from './impl/node';
-import PandaMock from './impl/mock';
 
 export default function PandaUSB (options) {
   if (require('is-browser')) {
+    let PandaWebUSB = require('./impl/browser');
     return new PandaWebUSB(options, navigator.usb);
   }
   // check for test before node since tests always run in node
   if (isTestEnv()) {
+    let PandaMock = require('./impl/mock');
     return new PandaMock(options);
   }
   if (require('is-node')) {
+    let PandaNodeUSB = require('./impl/node');
     return new PandaNodeUSB(options);
   }
   console.log(process.env);

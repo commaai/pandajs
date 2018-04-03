@@ -2,7 +2,7 @@ import { packCAN, unpackCAN } from 'can-message';
 import Event from 'weakmap-event';
 import { partial } from 'ap';
 import now from 'performance-now';
-import wait from './wait';
+import { promise as wait } from 'es6-sleep';
 
 const PANDA_VENDOR_ID = 0xbbaa;
 //const PANDA_PRODUCT_ID = 0xddcc;
@@ -14,7 +14,8 @@ const ConnectEvent = Event();
 const DisconnectEvent = Event();
 
 export default class Panda {
-  constructor() {
+  constructor(options, usb) {
+    this.usb = usb;
     this.device = null;
     this.onError = partial(ErrorEvent.listen, this);
     this.onConnect = partial(ConnectEvent.listen, this);
@@ -23,10 +24,14 @@ export default class Panda {
 
   async connect() {
     // Must be called via a mouse click handler, per Chrome restrictions.
-    this.device = await navigator.usb.requestDevice({ filters: [{ vendorId: PANDA_VENDOR_ID }] });
+    this.device = await this.usb.requestDevice({
+      filters: [{ vendorId: PANDA_VENDOR_ID }]
+    });
     await this.device.open();
     await this.device.selectConfiguration(1);
     await this.device.claimInterface(0);
+
+    ConnectEvent.broadcast(this, this.device.serialNumber);
 
     return this.device.serialNumber;
   }
@@ -41,36 +46,19 @@ export default class Panda {
     return true;
   }
 
-  async health() {
+  async vendorRequest(data, length) {
+    // data is request, value, index
     const controlParams = {
       requestType: 'vendor',
       recipient: 'device',
-      request: 0xd2,
-      value: 0,
-      index: 0
+      request: data.request,
+      value: data.value,
+      index: data.index
     };
-    try {
-      let buf = await this.device.controlTransferIn(controlParams, 13);
-      let voltage = buf.readUInt32LE(0);
-      let current = buf.readUInt32LE(4);
-      let isStarted = buf.readInt8(8) === 1;
-      let controlsAreAllowed = buf.readInt8(9) === 1;
-      let isGasInterceptorDetector = buf.readInt8(10) === 1;
-      let isStartSignalDetected = buf.readInt8(11) === 1;
-      let isStartedAlt = buf.readInt8(12) === 1;
 
-      return {
-        voltage,
-        current,
-        isStarted,
-        controlsAreAllowed,
-        isGasInterceptorDetector,
-        isStartSignalDetected,
-        isStartedAlt
-      };
-    } catch (err) {
-      ErrorEvent.broadcast(this, { event: 'Panda.health failed', error: err });
-    }
+    var result = await this.device.controlTransferIn(controlParams, length);
+    result.data = Buffer.from(result.data.buffer);
+    return result;
   }
 
   // not used anymore, but is nice for reference

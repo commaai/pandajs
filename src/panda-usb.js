@@ -1,12 +1,17 @@
-import PandaBrowser from './browser';
+import PandaWebUSB from './impl/webusb';
+import PandaNodeUSB from './impl/nodeusb';
 import PandaMock from './mock';
+import { USB } from 'webusb';
 
-export default function PandaUSB () {
+export default function PandaUSB (options) {
   if (require('is-browser')) {
-    return new PandaBrowser();
+    return new PandaWebUSB(options, navigator.usb);
   }
   if (require('./is-test')) {
-    return new PandaMock();
+    return new PandaMock(options);
+  }
+  if (require('is-node')) {
+    return new PandaNodeUSB(options);
   }
   console.log(process.env);
   throw new Error('pandajs.PandaUSB: Unable to connect to any usb devices, unsupported environment.');

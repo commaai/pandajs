@@ -1,7 +1,7 @@
 // a mock interface for USB communications
 // this is used by the test cases
 import Event from 'weakmap-event';
-import wait from 'delay';
+import wait from '../delay';
 import { partial } from 'ap';
 
 const ErrorEvent = Event();

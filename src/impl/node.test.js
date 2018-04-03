@@ -1,6 +1,6 @@
 import PandaNode from './node';
 import test from 'tape';
-import wait from 'delay';
+import wait from '../delay';
 import { partial } from 'ap';
 
 const desiredDeviceIndex = 2;

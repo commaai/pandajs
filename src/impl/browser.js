@@ -2,7 +2,7 @@ import { packCAN, unpackCAN } from 'can-message';
 import Event from 'weakmap-event';
 import { partial } from 'ap';
 import now from 'performance-now';
-import wait from 'delay';
+import wait from '../delay';
 
 const PANDA_VENDOR_ID = 0xbbaa;
 //const PANDA_PRODUCT_ID = 0xddcc;

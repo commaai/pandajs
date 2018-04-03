@@ -5,7 +5,7 @@ import now from 'performance-now';
 import raf from 'raf';
 import { timeout } from 'thyming';
 
-import wait from 'delay';
+import wait from './delay';
 import PandaUSB from './panda-usb';
 
 // how many messages to batch at maximum when reading as fast as we can

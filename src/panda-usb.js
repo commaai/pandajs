@@ -1,7 +1,6 @@
 import PandaWebUSB from './impl/webusb';
 import PandaNodeUSB from './impl/nodeusb';
 import PandaMock from './mock';
-import { USB } from 'webusb';
 
 export default function PandaUSB (options) {
   if (require('is-browser')) {

@@ -74,6 +74,9 @@ export default class Panda {
 
     return !wasPaused;
   }
+  async resume() {
+    return this.unpause();
+  }
   async unpause() {
     var wasPaused = this.isPaused();
     if (!wasPaused) {

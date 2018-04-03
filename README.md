@@ -32,7 +32,7 @@ panda.start();
 panda.pause();
 
 // resume reading data
-panda.resume();
+panda.unpause();
 
 // close connects and take everything down
 panda.disconnect();
@@ -79,6 +79,9 @@ Pauses reading in messages from the active connection. Returns true only if the 
 
 #### `Panda.unpause()` -> `boolean`
 Pauses reading in messages from the active connection. Returns true only if the stream was paused.
+
+#### `Panda.resume()` -> `boolean`
+Alias for `unpause`.
 
 #### `Panda.isConnected()` -> `boolean`
 Returns true if the panda instance is currecntly connected to a USB device.

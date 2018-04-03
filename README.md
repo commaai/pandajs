@@ -1,10 +1,10 @@
 # PandaJS
 Interract with your [Panda OBD-II Dongle](https://shop.comma.ai/products/panda-obd-ii-dongle) from JavaScript.
 
-Support
+Supports
  * [x] Browser
+ * [x] Node
  * [ ] React Native
- * [ ] Node
 
 ## Installation
 `npm i --save @commaai/pandajs`
@@ -32,7 +32,7 @@ panda.start();
 panda.pause();
 
 // resume reading data
-panda.resume();
+panda.unpause();
 
 // close connects and take everything down
 panda.disconnect();
@@ -43,8 +43,8 @@ panda.disconnect();
 #### `new Panda([options])` -> `Panda`
 Creates a new Panda instance
 
-Parameters:
- * `options` *optional*
+* `options` (*optional* object)
+  * `selectDevice`: (*optional* `function(devices, callback)`) A user defined function for selecting which available device to use, parameters are an array of discovered devices and a callback function. The method can either return the desired device, return a promise, or use the callback function. There is no timeout for this method, so make sure it eventually does one of those three things. *This option does nothing in browser mode since webusb has it's own UI for selecting the device.*
 
 ### Methods
 #### `Panda.connect()` -> `Promise: string`
@@ -56,7 +56,7 @@ Disconnect from the USB device and stop everything. Returns true if it was runni
 #### `Panda.health()` -> `HealthStatus`
 Requests the current health of the Panda unit. Only available while connected, returns the health object on success or errors.
 
- * `HealthStatus`:
+* `HealthStatus`: (object)
   * `voltage`: (number)
   * `current`: (number)
   * `isStarted`: (boolean)
@@ -80,6 +80,9 @@ Pauses reading in messages from the active connection. Returns true only if the 
 #### `Panda.unpause()` -> `boolean`
 Pauses reading in messages from the active connection. Returns true only if the stream was paused.
 
+#### `Panda.resume()` -> `boolean`
+Alias for `unpause`.
+
 #### `Panda.isConnected()` -> `boolean`
 Returns true if the panda instance is currecntly connected to a USB device.
 
@@ -90,9 +93,8 @@ Returns true if the panda instance currently has message reading paused
 #### `Panda.onMessage(listener)` -> `function`
 Register a handler for receiving messages. This should be done before calling `start` to avoid missing any messages. Returns an `unlisten` function that will disable the listener when called.
 
- * Parameters:
-  * `listener`: (*required*, `function (messageData)`) Handler to call each time messages are received
-   * `messageData`:
+* `listener`: (*required*, `function (messageData)`) Handler to call each time messages are received
+  * `messageData`: (object)
     * `time`: (number) High precision time in which this event was received.
     * `canMessages`: (Array<CanMessage>)
       * `bus`: (number) The bus this message came from
@@ -103,25 +105,22 @@ Register a handler for receiving messages. This should be done before calling `s
 #### `Panda.onError(listener)` -> `function`
 Register an error handler. Returns an `unlisten` function that will disable the listener when called.
 
- * Parameters:
-  * `listener`: (*required*, `function (err)`) Handler to call when errors occur
-   * `err`:
+* `listener`: (*required*, `function (err)`) Handler to call when errors occur
+  * `err`: (object)
     * `error`: (Error) Error object incurred
     * `event`: (string) Description of where the error occured
 
 #### `Panda.onConnect(listener)` -> `function`
 Register a handler to run when successfully connecting to a Panda device. Returns an `unlisten` function that will disable the listener when called.
 
- * Parameters:
-  * `listener`: (*required*, `function (usbId)`) Handler to call when connected
-   * `usbId`: (string) The ID of the USB device connected to.
+* `listener`: (*required*, `function (usbId)`) Handler to call when connected
+  * `usbId`: (string) The ID of the USB device connected to.
 
-#### `Panda.onConnect(listener)` -> `function`
+#### `Panda.onDisconnect(listener)` -> `function`
 Register a handler to run when disconnecting from a Panda device. Returns an `unlisten` function that will disable the listener when called.
 
- * Parameters:
-  * `listener`: (*required*, `function (usbId)`) Handler to call when disconnected
-   * `usbId`: (string) The ID of the USB device disconnected from.
+* `listener`: (*required*, `function (usbId)`) Handler to call when disconnected
+  * `usbId`: (string) The ID of the USB device disconnected from.
 
 ## Contributing
 `yarn run test`

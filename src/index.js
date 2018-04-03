@@ -5,7 +5,7 @@ import now from 'performance-now';
 import raf from 'raf';
 import { timeout } from 'thyming';
 
-import wait from './wait';
+import { promise as wait } from 'es6-sleep';
 import PandaUSB from './panda-usb';
 
 // how many messages to batch at maximum when reading as fast as we can
@@ -17,20 +17,28 @@ const ConnectEvent = Event();
 const DisconnectEvent = Event();
 
 export default class Panda {
-  constructor() {
+  constructor(options) {
+    options = options || {};
+
+    options.selectDevice = options.selectDevice || selectFirstDevice;
+
+    // setup event handlers
     this.onMessage = partial(MessageEvent.listen, this);
     this.onError = partial(ErrorEvent.listen, this);
     this.onConnect = partial(ConnectEvent.listen, this);
     this.onDisconnect = partial(DisconnectEvent.listen, this);
 
-    this.device = PandaUSB();
+    // initialize device object
+    this.device = PandaUSB(options);
     this.device.onError(partial(ErrorEvent.broadcast, this));
     this.device.onConnect(this.connectHandler.bind(this));
     this.device.onDisconnect(this.disconnectHandler.bind(this));
 
+    // member variables
     this.paused = true;
     this.messageQueue = [];
 
+    // function binding
     this.readLoop = this.readLoop.bind(this);
     this.flushMessageQueue = this.flushMessageQueue.bind(this);
   }
@@ -66,6 +74,9 @@ export default class Panda {
 
     return !wasPaused;
   }
+  async resume() {
+    return this.unpause();
+  }
   async unpause() {
     var wasPaused = this.isPaused();
     if (!wasPaused) {
@@ -78,16 +89,47 @@ export default class Panda {
     return wasPaused;
   }
   async health() {
-    return this.device.health();
+    const controlParams = {
+      request: 0xd2,
+      value: 0,
+      index: 0
+    };
+    try {
+      let result = await this.device.vendorRequest(controlParams, 13);
+      let buf = result.data;
+
+      let voltage = buf.readUInt32LE(0);
+      let current = buf.readUInt32LE(4);
+      let isStarted = buf.readInt8(8) === 1;
+      let controlsAreAllowed = buf.readInt8(9) === 1;
+      let isGasInterceptorDetector = buf.readInt8(10) === 1;
+      let isStartSignalDetected = buf.readInt8(11) === 1;
+      let isStartedAlt = buf.readInt8(12) === 1;
+
+      return {
+        voltage,
+        current,
+        isStarted,
+        controlsAreAllowed,
+        isGasInterceptorDetector,
+        isStartSignalDetected,
+        isStartedAlt
+      };
+    } catch (err) {
+      ErrorEvent.broadcast(this, { event: 'Panda.health failed', error: err });
+    }
   }
 
   // event handlers
   connectHandler(usbId) {
     this.connected = usbId;
+    ConnectEvent.broadcast(this, usbId);
   }
   disconnectHandler() {
+    const previousConnection = this.connected;
     this.connected = false;
     this.paused = true;
+    DisconnectEvent.broadcast(this, previousConnection);
   }
 
   // message queueing and flushing
@@ -155,4 +197,8 @@ export default class Panda {
     // repeat!
     timeout(this.readLoop);
   }
+}
+
+function selectFirstDevice (devices) {
+  return devices[0];
 }

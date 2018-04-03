@@ -1,7 +1,7 @@
 // a mock interface for USB communications
 // this is used by the test cases
 import Event from 'weakmap-event';
-import wait from './wait';
+import { promise as wait } from 'es6-sleep';
 import { partial } from 'ap';
 
 const ErrorEvent = Event();
@@ -18,6 +18,7 @@ export default class MockPanda {
   async connect() {
     await wait(100);
     ConnectEvent.broadcast(this, '123345123');
+    return '123345123'
   }
 
   async disconnect() {

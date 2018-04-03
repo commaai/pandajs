@@ -7,8 +7,9 @@
     "test": "tape -r babel-register './src/**/*test.js' | tap-spec",
     "watch": "nodemon -w src --exec npm run build",
     "build": "babel ./src/ --ignore '**.test.js','test.js' --out-dir ./lib/",
-    "prepublish": "npm run build",
-    "jest": "jest",
+    "prepare": "npm run build",
+    "tape": "tape",
+    "tap-spec": "tap-spec",
     "babel": "babel"
   },
   "keywords": [

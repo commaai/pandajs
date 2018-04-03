@@ -29,7 +29,7 @@ export default class Panda {
     this.onDisconnect = partial(DisconnectEvent.listen, this);
 
     // initialize device object
-    this.device = PandaUSB(options);
+    this.device = new PandaUSB(options);
     this.device.onError(partial(ErrorEvent.broadcast, this));
     this.device.onConnect(this.connectHandler.bind(this));
     this.device.onDisconnect(this.disconnectHandler.bind(this));

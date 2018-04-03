@@ -12,6 +12,9 @@
     "tap-spec": "tap-spec",
     "babel": "babel"
   },
+  "browser": {
+    "usb": false
+  },
   "bin": {
     "dump-can": "./dump-can.js"
   },

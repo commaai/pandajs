@@ -1,7 +1,7 @@
 # PandaJS
 Interract with your [Panda OBD-II Dongle](https://shop.comma.ai/products/panda-obd-ii-dongle) from JavaScript.
 
-Support
+Supports
  * [x] Browser
  * [x] Node
  * [ ] React Native
@@ -43,7 +43,7 @@ panda.disconnect();
 #### `new Panda([options])` -> `Panda`
 Creates a new Panda instance
 
-* `options` *optional*
+* `options` (*optional* object)
   * `selectDevice`: (*optional* `function(devices, callback)`) A user defined function for selecting which available device to use, parameters are an array of discovered devices and a callback function. The method can either return the desired device, return a promise, or use the callback function. There is no timeout for this method, so make sure it eventually does one of those three things. *This option does nothing in browser mode since webusb has it's own UI for selecting the device.*
 
 ### Methods
@@ -56,7 +56,7 @@ Disconnect from the USB device and stop everything. Returns true if it was runni
 #### `Panda.health()` -> `HealthStatus`
 Requests the current health of the Panda unit. Only available while connected, returns the health object on success or errors.
 
-* `HealthStatus`:
+* `HealthStatus`: (object)
   * `voltage`: (number)
   * `current`: (number)
   * `isStarted`: (boolean)
@@ -91,7 +91,7 @@ Returns true if the panda instance currently has message reading paused
 Register a handler for receiving messages. This should be done before calling `start` to avoid missing any messages. Returns an `unlisten` function that will disable the listener when called.
 
 * `listener`: (*required*, `function (messageData)`) Handler to call each time messages are received
-  * `messageData`:
+  * `messageData`: (object)
     * `time`: (number) High precision time in which this event was received.
     * `canMessages`: (Array<CanMessage>)
       * `bus`: (number) The bus this message came from
@@ -103,7 +103,7 @@ Register a handler for receiving messages. This should be done before calling `s
 Register an error handler. Returns an `unlisten` function that will disable the listener when called.
 
 * `listener`: (*required*, `function (err)`) Handler to call when errors occur
-  * `err`:
+  * `err`: (object)
     * `error`: (Error) Error object incurred
     * `event`: (string) Description of where the error occured
 

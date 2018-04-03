@@ -1,6 +1,6 @@
 import PandaNode from './node';
 import test from 'tape';
-import { promise as wait } from 'es6-sleep';
+import wait from 'delay';
 import { partial } from 'ap';
 
 const desiredDeviceIndex = 2;

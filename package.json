@@ -41,7 +41,7 @@
   "dependencies": {
     "ap": "^0.2.0",
     "can-message": "^0.1.0",
-    "es6-sleep": "^2.0.2",
+    "delay": "^2.0.0",
     "is-browser": "^2.0.1",
     "is-node": "^1.0.2",
     "is-promise": "^2.1.0",

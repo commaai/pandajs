@@ -1,5 +1,5 @@
-import PandaWebUSB from './impl/webusb';
-import PandaNodeUSB from './impl/nodeusb';
+import PandaWebUSB from './impl/browser';
+import PandaNodeUSB from './impl/node';
 import PandaMock from './mock';
 
 export default function PandaUSB (options) {

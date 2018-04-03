@@ -6,6 +6,7 @@ export default function PandaUSB (options) {
   if (require('is-browser')) {
     return new PandaWebUSB(options, navigator.usb);
   }
+  // check for test before node since tests always run in node
   if (require('./is-test')) {
     return new PandaMock(options);
   }

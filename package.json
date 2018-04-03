@@ -1,6 +1,6 @@
 {
   "name": "@commaai/pandajs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "JavaScript interface for communicating with Panda devices.",
   "main": "lib/index.js",
   "scripts": {

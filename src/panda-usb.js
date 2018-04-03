@@ -1,16 +1,16 @@
 
 export default function PandaUSB (options) {
   if (require('is-browser')) {
-    let PandaWebUSB = require('./impl/browser');
+    let PandaWebUSB = require('./impl/browser').default;
     return new PandaWebUSB(options, navigator.usb);
   }
   // check for test before node since tests always run in node
   if (isTestEnv()) {
-    let PandaMock = require('./impl/mock');
+    let PandaMock = require('./impl/mock').default;
     return new PandaMock(options);
   }
   if (require('is-node')) {
-    let PandaNodeUSB = require('./impl/node');
+    let PandaNodeUSB = require('./impl/node').default;
     return new PandaNodeUSB(options);
   }
   console.log(process.env);

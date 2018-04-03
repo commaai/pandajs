@@ -12,6 +12,9 @@
     "tap-spec": "tap-spec",
     "babel": "babel"
   },
+  "bin": {
+    "dump-can": "./dump-can.js"
+  },
   "keywords": [
     "CAN",
     "panda",

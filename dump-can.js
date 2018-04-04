@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const Panda = require('./lib').default;
-const wait = require('es6-sleep').promise;
+const wait = require('./src/delay');
 
 var panda = new Panda({
   selectDevice: selectDevice

@@ -24,12 +24,12 @@ const MessageEvent = Event();
 export default class Panda {
   constructor(options) {
     this.device = null;
-    this.ignoreLengths = {};
 
     this.onError = partial(ErrorEvent.listen, this);
     this.onConnect = partial(ConnectEvent.listen, this);
     this.onDisconnect = partial(DisconnectEvent.listen, this);
     this.handleData = this.handleData.bind(this);
+    this.handleError = this.handleError.bind(this);
   }
   async connectToTCP() {
     return new Promise((resolve, reject) => {
@@ -37,12 +37,12 @@ export default class Panda {
         this.socket = null;
         ErrorEvent.broadcast(this, err);
         reject(err);
-      }
+      };
       var succeed = () => {
         this.socket.off('close', fail);
         this.socket.off('error', fail);
         resolve();
-      }
+      };
 
       this.socket = net.connect(PANDA_TCP_PORT, PANDA_HOST);
       this.socket.on('connect', resolve);
@@ -51,11 +51,12 @@ export default class Panda {
     });
   }
   async connect() {
+    this.ignoreLengths = {};
     await this.connectToTCP();
 
     this.socket.on('data', this.handleData);
     this.socket.on('close', partial(DisconnectEvent.broadcast, this));
-    this.socket.on('error', partial(ErrorEvent.broadcast, this));
+    this.socket.on('error', this.handleError);
 
     // var serialNumber = await this.getStringDescriptor(this.device.deviceDescriptor.iSerialNumber);
     // ConnectEvent.broadcast(this, serialNumber);
@@ -151,6 +152,14 @@ export default class Panda {
       DataEvent.broadcast(this, data);
     } else {
       MessageEvent.broadcast(this, data);
+    }
+  }
+
+  async handleError(err) {
+    if (err.errno === 'ETIMEDOUT') {
+      DisconnectEvent.broadcast(this, err.errno);
+    } else {
+      ErrorEvent.broadcast(this, err);
     }
   }
 

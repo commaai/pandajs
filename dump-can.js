@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 
+const cli = require('commander');
 const Panda = require('./lib').default;
 const wait = require('./src/delay');
 
+cli
+  .option('-w, --wifi', 'Connect to Panda over wifi instead of USB')
+  .parse(process.argv);
+
 var panda = new Panda({
-  selectDevice: selectDevice
+  selectDevice: selectDevice,
+  wifi: cli.wifi
 });
 
 panda.onMessage(function (msg) {

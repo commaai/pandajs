@@ -98,8 +98,8 @@ export default class Panda {
       let result = await this.device.vendorRequest(controlParams, 13);
       let buf = result.data;
 
-      let voltage = buf.readUInt32LE(0);
-      let current = buf.readUInt32LE(4);
+      let voltage = buf.readUInt32LE(0) / 1000;
+      let current = buf.readUInt32LE(4) / 1000;
       let isStarted = buf.readInt8(8) === 1;
       let controlsAreAllowed = buf.readInt8(9) === 1;
       let isGasInterceptorDetector = buf.readInt8(10) === 1;

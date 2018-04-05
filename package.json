@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "JavaScript interface for communicating with Panda devices.",
   "main": "lib/index.js",
+  "browser": "lib/browser.js",
   "scripts": {
     "test": "tape -r babel-register './src/**/*test.js' | tap-spec",
     "watch": "nodemon -w src --exec npm run build",
@@ -11,9 +12,6 @@
     "tape": "tape",
     "tap-spec": "tap-spec",
     "babel": "babel"
-  },
-  "browser": {
-    "usb": false
   },
   "bin": {
     "dump-can": "./dump-can.js"

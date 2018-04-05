@@ -1,4 +1,4 @@
-import PandaDevice from './panda-device';
+import PandaDevice from './impl/browser';
 import PandaAPI from './panda';
 
 export default function Panda (options) {

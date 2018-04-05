@@ -58,10 +58,7 @@ export default class Panda {
     this.socket.on('close', partial(DisconnectEvent.broadcast, this));
     this.socket.on('error', this.handleError);
 
-    // var serialNumber = await this.getStringDescriptor(this.device.deviceDescriptor.iSerialNumber);
-    // ConnectEvent.broadcast(this, serialNumber);
-
-    return 'wifi';
+    return true;
   }
 
   async disconnect() {

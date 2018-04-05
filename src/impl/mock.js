@@ -15,9 +15,25 @@ export default class MockPanda {
     this.onDisconnect = partial(DisconnectEvent.listen, this);
   }
 
+  async vendorRequest (params, length) {
+    switch (params.request) {
+      case 0xd2:
+        return {
+          data: Buffer.from('0x6c2f0000b20f00000000000000'),
+          status: 'ok'
+        };
+      case 0xd0:
+        return {
+          data: Buffer.from('0x626134333533373534333663326136646b347a6776366c527744ffff6fe25de5'),
+          status: 'ok'
+        };
+      default:
+        console.error('UNMOCKED API CALL MADE', params.request);
+    }
+  }
+
   async connect() {
     await wait(100);
-    ConnectEvent.broadcast(this, '123345123');
     return '123345123'
   }
 

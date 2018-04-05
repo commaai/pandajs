@@ -75,10 +75,7 @@ export default class Panda {
     await this.setConfiguration(1);
     await this.device.interface(0).claim();
 
-    var serialNumber = await this.getStringDescriptor(this.device.deviceDescriptor.iSerialNumber);
-    ConnectEvent.broadcast(this, serialNumber);
-
-    return serialNumber;
+    return true;
   }
 
   async disconnect() {

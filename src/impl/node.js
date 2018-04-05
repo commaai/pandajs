@@ -88,18 +88,36 @@ export default class Panda {
     return true;
   }
 
-  async vendorRequest(data, length) {
+  async vendorRequest(controlParams, length) {
     return new Promise((resolve, reject) => {
-      // data is request, value, index
+      // controlParams is request, value, index
       const flags = USB.LIBUSB_RECIPIENT_DEVICE | USB.LIBUSB_REQUEST_TYPE_VENDOR | USB.LIBUSB_ENDPOINT_IN;
 
-      this.device.controlTransfer(flags, data.request, data.value, data.index, length, (err, data) => {
+      this.device.controlTransfer(flags, controlParams.request, controlParams.value, controlParams.index, length, (err, data) => {
         if (err) {
           return reject(err);
         }
 
         resolve({
           data: Buffer.from(data),
+          status: "ok" // hack, find out when it's actually ok
+        });
+      });
+    });
+  }
+
+  async vendorWrite(controlParams, message) {
+    return new Promise((resolve, reject) => {
+      // controlParams is request, value, index
+      const flags = USB.LIBUSB_RECIPIENT_DEVICE | USB.LIBUSB_REQUEST_TYPE_VENDOR | USB.LIBUSB_ENDPOINT_OUT;
+
+      this.device.controlTransfer(flags, controlParams.request, controlParams.value, controlParams.index, message, (err, data) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve({
+          data: Buffer.from([]),
           status: "ok" // hack, find out when it's actually ok
         });
       });

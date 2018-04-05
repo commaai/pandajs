@@ -17,10 +17,6 @@ const DisconnectEvent = Event();
 
 export default class Panda {
   constructor(options) {
-    options = options || {};
-
-    options.selectDevice = options.selectDevice || selectFirstDevice;
-
     // setup event handlers
     this.onMessage = partial(MessageEvent.listen, this);
     this.onError = partial(ErrorEvent.listen, this);
@@ -57,9 +53,8 @@ export default class Panda {
     }
     await this.device.connect();
 
-    var serialNumber = await this.serialNumber();
+    var serialNumber = await this.getSerialNumber();
     this.connectHandler(serialNumber);
-    ConnectEvent.broadcast(this, serialNumber);
 
     return serialNumber;
   }
@@ -93,54 +88,104 @@ export default class Panda {
 
     return wasPaused;
   }
-  async health() {
-    const controlParams = {
+
+  // vendor API methods
+  async getHealth() {
+    let buf = await this.vendorRequest('health', {
       request: 0xd2,
       value: 0,
       index: 0
+    }, 13);
+
+    let voltage = buf.readUInt32LE(0) / 1000;
+    let current = buf.readUInt32LE(4) / 1000;
+    let isStarted = buf.readInt8(8) === 1;
+    let controlsAreAllowed = buf.readInt8(9) === 1;
+    let isGasInterceptorDetector = buf.readInt8(10) === 1;
+    let isStartSignalDetected = buf.readInt8(11) === 1;
+    let isStartedAlt = buf.readInt8(12) === 1;
+
+    return {
+      voltage,
+      current,
+      isStarted,
+      controlsAreAllowed,
+      isGasInterceptorDetector,
+      isStartSignalDetected,
+      isStartedAlt
     };
-    try {
-      let result = await this.device.vendorRequest(controlParams, 13);
-      let buf = result.data;
-
-      let voltage = buf.readUInt32LE(0) / 1000;
-      let current = buf.readUInt32LE(4) / 1000;
-      let isStarted = buf.readInt8(8) === 1;
-      let controlsAreAllowed = buf.readInt8(9) === 1;
-      let isGasInterceptorDetector = buf.readInt8(10) === 1;
-      let isStartSignalDetected = buf.readInt8(11) === 1;
-      let isStartedAlt = buf.readInt8(12) === 1;
-
-      return {
-        voltage,
-        current,
-        isStarted,
-        controlsAreAllowed,
-        isGasInterceptorDetector,
-        isStartSignalDetected,
-        isStartedAlt
-      };
-    } catch (err) {
-      ErrorEvent.broadcast(this, { event: 'Panda.health failed', error: err });
-    }
   }
-
-  async serialNumber() {
-    const controlParams = {
+  async getDeviceMetadata() {
+    let buf = await this.vendorRequest('getDeviceMetadata', {
       request: 0xd0,
       value: 0,
       index: 0
-    };
-    try {
-      let result = await this.device.vendorRequest(controlParams, 32);
-      let buf = result.data;
-      let serial = buf.slice(0, 0x10); // serial is the wifi style serial
-      let serial2 = buf.slice(0x10, 0x1a);
-      let hashSig = buf.slice(0x1c);
+    }, 0x20);
 
-      return serial.toString();
+    let serial = buf.slice(0, 0x10); // serial is the wifi style serial
+    let secret = buf.slice(0x10, 0x10 + 10);
+    let hashSig = buf.slice(0x1c);
+
+    return [serial.toString(), secret.toString()];
+  }
+  async getSerialNumber() {
+    var [serial, secret] = await this.getDeviceMetadata();
+    return serial;
+  }
+  async getSecret() {
+    var [serial, secret] = await this.getDeviceMetadata();
+    return secret;
+  }
+  async getVersion() {
+    let buf = await this.vendorRequest('getVersion', {
+      request: 0xd6,
+      value: 0,
+      index: 0
+    }, 0x40);
+
+    return buf.toString();
+  }
+  async isGrey() {
+    let buf = await this.vendorRequest('isGrey', {
+      request: 0xc1,
+      value: 0,
+      index: 0
+    }, 0x40);
+
+    return !!(buf.length && buf[0] === 1);
+  }
+  async setSafetyMode(mode) {
+    let buf = await this.vendorWrite('setSafetyMode', {
+      request: 0xdc,
+      value: 0,
+      index: 0
+    });
+
+    return buf.toString();
+  }
+
+  // i/o wrappers
+  async vendorRequest (event, controlParams, length) {
+    try {
+      let result = await this.device.vendorRequest(controlParams, length);
+
+      return result.data;
     } catch (err) {
-      ErrorEvent.broadcast(this, { event: 'Panda.serialNumber failed', error: err });
+      ErrorEvent.broadcast(this, { event: 'Panda.' + event + ' failed', error: err });
+      throw err;
+    }
+  }
+  async vendorWrite (event, controlParams, message) {
+    if (!message || !message.length) {
+      message = Buffer.from([]);
+    }
+    try {
+      let result = await this.device.vendorWrite(controlParams, message);
+
+      return result.data;
+    } catch (err) {
+      ErrorEvent.broadcast(this, { event: 'Panda.' + event + ' failed', error: err });
+      throw err;
     }
   }
 
@@ -221,8 +266,4 @@ export default class Panda {
     // repeat!
     timeout(this.readLoop);
   }
-}
-
-function selectFirstDevice (devices) {
-  return devices[0];
 }

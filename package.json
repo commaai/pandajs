@@ -14,7 +14,8 @@
     "babel": "babel"
   },
   "bin": {
-    "dump-can": "./dump-can.js"
+    "dump-can": "./dump-can.js",
+    "control-panda": "./control-panda.js"
   },
   "keywords": [
     "CAN",

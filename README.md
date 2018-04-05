@@ -54,18 +54,6 @@ Tell the Panda instance to connect to USB. Does not start reading messages until
 #### `Panda.disconnect()` -> `Promise: boolean`
 Disconnect from the USB device and stop everything. Returns true if it was running before.
 
-#### `Panda.health()` -> `HealthStatus`
-Requests the current health of the Panda unit. Only available while connected, returns the health object on success or errors.
-
-* `HealthStatus`: (object)
-  * `voltage`: (number)
-  * `current`: (number)
-  * `isStarted`: (boolean)
-  * `controlsAreAllowed`: (boolean)
-  * `isGasInterceptorDetector`: (boolean)
-  * `isStartSignalDetected`: (boolean)
-  * `isStartedAlt`: (boolean)
-
 #### `Panda.start()` -> `Promise: string`
 Tell the Panda instance to connect to USB if it's not already and start reading messages. On success, returns the ID of the USB device found.
 
@@ -89,6 +77,56 @@ Returns true if the panda instance is currecntly connected to a USB device.
 
 #### `Panda.isPaused()` -> `boolean`
 Returns true if the panda instance currently has message reading paused
+
+#### `Panda.getHealth()` -> `HealthStatus`
+Requests the current health of the Panda unit. Only available while connected, returns the health object on success or errors.
+
+* `HealthStatus`: (object)
+  * `voltage`: (number)
+  * `current`: (number)
+  * `isStarted`: (boolean)
+  * `controlsAreAllowed`: (boolean)
+  * `isGasInterceptorDetector`: (boolean)
+  * `isStartSignalDetected`: (boolean)
+  * `isStartedAlt`: (boolean)
+
+#### `Panda.getDeviceMetadata()` -> `[string, string]`
+Requests both the serial number and secret from the Panda device. This is used internally to power `getSerialNumber` and `getSecret`.
+
+Returns an array with 2 items in, the serial number and then the secret.
+
+#### `Panda.getSerialNumber()` -> `string`
+Requests the serial number.
+
+This function is the same as running
+```js
+panda.getDeviceMetadata()
+  .then((result) => result[0])
+```
+
+#### `Panda.getSecret()` -> `string`
+Requests the secret used for wifi among other things.
+
+This function is the same as running
+```js
+panda.getDeviceMetadata()
+  .then((result) => result[1])
+```
+
+#### `Panda.getVersion()` -> `string`
+Requests the string version number, output will look something like `v1.0.1-11d45090-RELEASE`
+
+#### `Panda.isGrey()` -> `boolean`
+Query if the Panda device is a grey Panda or a normal Panda. Returns true if it is grey.
+
+#### `Panda.setSafetyMode(mode)` -> `void`
+Sets the safety mode on the Panda device.
+
+ * `mode`: (*required* `SafetyMode`) The safety mode to enter. Must be a valid safety mode, safety modes are exposed as constants on the root of the library.
+
+```js
+import { SAFETY_NOOUTPUT, SAFETY_HONDA, SAFETY_TOYOTA, SAFETY_HONDA_BOSCH, SAFETY_TOYOTA_NOLIMITS, SAFETY_ALLOUTPUT, SAFETY_ELM327 } from '@commaai/pandajs';
+```
 
 ### Events
 #### `Panda.onMessage(listener)` -> `function`
@@ -122,6 +160,59 @@ Register a handler to run when disconnecting from a Panda device. Returns an `un
 
 * `listener`: (*required*, `function (usbId)`) Handler to call when disconnected
   * `usbId`: (string) The ID of the USB device disconnected from.
+
+## Command Line Tools
+This package ships with 2 CLI tools. Check the `--help` on each to see all of their options.
+
+#### `dump-can`
+This is used to dump metadata about the incoming CAN messages, or output the entire messages with `-a`.
+
+Examples:
+```bash
+$ dump-can
+Connected: ba435375436c2a6d
+{ voltage: 12.123,
+  current: 4.093,
+  isStarted: false,
+  controlsAreAllowed: false,
+  isGasInterceptorDetector: false,
+  isStartSignalDetected: false,
+  isStartedAlt: false }
+Connect finished, waiting then reading all messages...
+Start reading...
+Message count: 1
+First message CAN count: 256
+First CAN message: { address: 420,
+  busTime: 54858,
+  data: <Buffer 00 66 00 02 00 00 00 0b>,
+  bus: 0 }
+Message count: 1
+First message CAN count: 256
+First CAN message: { address: 1024,
+  busTime: 6626,
+  data: <Buffer 79 00 02 00 0a 78 00 09>,
+  bus: 1 }
+```
+```bash
+$ dump-can -an
+{"time":7.3178732019999995,"canMessages":[{"address":1024,"busTime":53980,"data":[121,0,2,0,10,120,0,9],"bus":1},{"address":420,"busTime":54066,"data":[0,102,0,2,0,0,0,11],"bus":0},{"address":1024,"busTime":54115,"data":[121,0,2,0,10,120,0,9],"bus":1}]}
+{"time":7.318214842000001,"canMessages":[{"address":420,"busTime":54202,"data":[0,102,0,2,0,0,0,11],"bus":0},{"address":1024,"busTime":54250,"data":[121,0,2,0,10,120,0,9],"bus":1},{"address":420,"busTime":54338,"data":[0,102,0,2,0,0,0,11],"bus":0}]}
+{"time":7.31846793,"canMessages":[{"address":1024,"busTime":54385,"data":[121,0,2,0,10,120,0,9],"bus":1},{"address":420,"busTime":54474,"data":[0,102,0,2,0,0,0,11],"bus":0}]}
+```
+
+#### `control-panda`
+This is a convenience tool wrapping each of the get and set methods exposed by this library.
+
+Examples:
+```bash
+$ ./control-panda.js wifi
+SID: panda-2baf789dacdacb64
+Password: aGBw61RwD0
+```
+```bash
+$ ./control-panda.js version
+v1.0.1-11d45090-RELEASE
+```
 
 ## Contributing
 `yarn run test`

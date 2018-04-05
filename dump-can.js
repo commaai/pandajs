@@ -15,7 +15,6 @@ cli
   .parse(process.argv);
 
 var panda = new Panda({
-  selectDevice: selectDevice,
   wifi: cli.wifi
 });
 
@@ -39,7 +38,7 @@ panda.onMessage(function (msg) {
 });
 
 panda.onError(function (err) {
-  if (cli.health) {
+  if (cli.errors) {
     console.error('Error:', err);
     process.exit(1);
   }
@@ -56,15 +55,10 @@ if (cli.health) {
 
 connectAndRun();
 
-function selectDevice (devices, cb) {
-  // console.log(devices);
-  return devices[0];
-}
-
 async function connectAndRun () {
   await panda.connect();
   if (cli.health) {
-    var health = await panda.health();
+    var health = await panda.getHealth();
     console.log(health);
     console.log('Connect finished, waiting then reading all messages...');
     await wait(1000);

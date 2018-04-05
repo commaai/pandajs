@@ -59,6 +59,21 @@ export default class Panda {
     return result;
   }
 
+  async vendorWrite(data, length) {
+    // data is request, value, index
+    const controlParams = {
+      requestType: 'vendor',
+      recipient: 'device',
+      request: data.request,
+      value: data.value,
+      index: data.index
+    };
+
+    await this.device.controlTransferOut(controlParams, length);
+
+    return true;
+  }
+
   // not used anymore, but is nice for reference
   async nextFakeMessage() {
     await wait(10);

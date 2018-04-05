@@ -56,7 +56,13 @@ export default class Panda {
     if (this.isConnected()) {
       return this.connected;
     }
-    return this.device.connect();
+    await this.device.connect();
+
+    var serialNumber = await this.serialNumber();
+    this.connectHandler(serialNumber);
+    ConnectEvent.broadcast(this, serialNumber);
+
+    return serialNumber;
   }
   async disconnect() {
     if (!this.isConnected()) {
@@ -98,8 +104,8 @@ export default class Panda {
       let result = await this.device.vendorRequest(controlParams, 13);
       let buf = result.data;
 
-      let voltage = buf.readUInt32LE(0);
-      let current = buf.readUInt32LE(4);
+      let voltage = buf.readUInt32LE(0) / 1000;
+      let current = buf.readUInt32LE(4) / 1000;
       let isStarted = buf.readInt8(8) === 1;
       let controlsAreAllowed = buf.readInt8(9) === 1;
       let isGasInterceptorDetector = buf.readInt8(10) === 1;
@@ -117,6 +123,25 @@ export default class Panda {
       };
     } catch (err) {
       ErrorEvent.broadcast(this, { event: 'Panda.health failed', error: err });
+    }
+  }
+
+  async serialNumber() {
+    const controlParams = {
+      request: 0xd0,
+      value: 0,
+      index: 0
+    };
+    try {
+      let result = await this.device.vendorRequest(controlParams, 32);
+      let buf = result.data;
+      let serial = buf.slice(0, 0x10); // serial is the wifi style serial
+      let serial2 = buf.slice(0x10, 0x1a);
+      let hashSig = buf.slice(0x1c);
+
+      return serial.toString();
+    } catch (err) {
+      ErrorEvent.broadcast(this, { event: 'Panda.serialNumber failed', error: err });
     }
   }
 

@@ -45,6 +45,7 @@ Creates a new Panda instance
 
 * `options` (*optional* object)
   * `selectDevice`: (*optional* `function(devices, callback)`) A user defined function for selecting which available device to use, parameters are an array of discovered devices and a callback function. The method can either return the desired device, return a promise, or use the callback function. There is no timeout for this method, so make sure it eventually does one of those three things. *This option does nothing in browser mode since webusb has it's own UI for selecting the device.*
+  * `wifi`: (*optional* `boolean`) Enables wifi mode, communicates with the panda device over an already established wifi connection with it. This option will throw errors if you enable it in browser mode.
 
 ### Methods
 #### `Panda.connect()` -> `Promise: string`

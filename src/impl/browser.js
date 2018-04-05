@@ -31,9 +31,7 @@ export default class Panda {
     await this.device.selectConfiguration(1);
     await this.device.claimInterface(0);
 
-    ConnectEvent.broadcast(this, this.device.serialNumber);
-
-    return this.device.serialNumber;
+    return true;
   }
 
   async disconnect() {

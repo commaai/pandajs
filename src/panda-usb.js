@@ -1,8 +1,15 @@
 
 export default function PandaUSB (options) {
   if (require('is-browser')) {
+    if (options.wifi) {
+      throw new Error('You cannot use wifi mode in the browser.');
+    }
     let PandaWebUSB = require('./impl/browser').default;
     return new PandaWebUSB(options, navigator.usb);
+  }
+  if (options.wifi) {
+    let PandaWifi = require('./impl/wifi').default;
+    return new PandaWifi(options);
   }
   // check for test before node since tests always run in node
   if (isTestEnv()) {

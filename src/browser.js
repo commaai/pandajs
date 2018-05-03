@@ -12,7 +12,7 @@ export const SAFETY_ELM327 = 0xE327;
 export default function Panda (options) {
   options = options || {};
 
-  var device = new PandaDevice(options);
+  var device = new PandaDevice(options, navigator.usb);
   options.device = device;
   return new PandaAPI(options);
 }

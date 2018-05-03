@@ -1,5 +1,5 @@
 # PandaJS
-Interract with your [Panda OBD-II Dongle](https://shop.comma.ai/products/panda-obd-ii-dongle) from JavaScript.
+Interract with your [panda OBD-II Dongle](https://shop.comma.ai/products/panda-obd-ii-dongle) from JavaScript.
 
 Supports
  * [x] Browser
@@ -220,4 +220,4 @@ v1.0.1-11d45090-RELEASE
 # License
 MIT @ comma.ai
 
-Read more about how to get started hacking your car with Panda [here](https://medium.com/@comma_ai/a-panda-and-a-cabana-how-to-get-started-car-hacking-with-comma-ai-b5e46fae8646).
+Read more about how to get started hacking your car with [panda](https://shop.comma.ai/products/panda-obd-ii-dongle) [here](https://medium.com/@comma_ai/a-panda-and-a-cabana-how-to-get-started-car-hacking-with-comma-ai-b5e46fae8646).

@@ -12,10 +12,14 @@ cli
   .option('-a, --all', 'Print every message instead of just summaries (VERY spammy, one message per line JSON encoded)')
   .option('-n, --no-health', 'Don\'t print startup/connection messages (useful with --all and output redirection)')
   .option('-e, --no-errors', 'Don\'t print errors either')
+  .option('-i, --index <i>', 'Choose a different connected panda than the first one (zero indexed)', parseInt)
   .parse(process.argv);
 
 var panda = new Panda({
-  wifi: cli.wifi
+  wifi: cli.wifi,
+  selectDevice: (devices) => {
+    return devices[Math.min(devices.length, cli.index || 0)];
+  }
 });
 
 panda.onMessage(function (msg) {

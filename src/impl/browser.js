@@ -55,7 +55,10 @@ export default class Panda {
     };
 
     var result = await this.device.controlTransferIn(controlParams, length);
-    result.data = Buffer.from(result.data.buffer);
+    result = {
+      data: Buffer.from(result.data.buffer),
+      status: result.status
+    };
     return result;
   }
 

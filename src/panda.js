@@ -157,7 +157,7 @@ export default class Panda {
   async setSafetyMode(mode) {
     let buf = await this.vendorWrite('setSafetyMode', {
       request: 0xdc,
-      value: 0,
+      value: mode,
       index: 0
     });
 

@@ -145,14 +145,35 @@ export default class Panda {
 
     return buf.toString();
   }
-  async isGrey() {
-    let buf = await this.vendorRequest('isGrey', {
+  async getType() {
+    let buf = await this.vendorRequest('getType', {
       request: 0xc1,
       value: 0,
       index: 0
     }, 0x40);
 
-    return !!(buf.length && buf[0] === 1);
+    return buf.length ? buf[0] : null;
+  }
+  async isWhite() {
+    return await this.getType() === 1;
+  }
+  async isGrey() {
+    return await this.getType() === 2;
+  }
+  async isBlack() {
+    return await this.getType() === 3;
+  }
+  async hasObd() {
+    return await this.getType() > 2;
+  }
+  async setObd(obd) {
+    let buf = await this.vendorWrite('setObd', {
+      request: 0xdb,
+      value: obd ? 1 : 0,
+      index: 0
+    });
+
+    return buf.toString();
   }
   async setSafetyMode(mode) {
     let buf = await this.vendorWrite('setSafetyMode', {

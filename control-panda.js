@@ -29,9 +29,25 @@ cli
   .description('Get wifi SID and password for the connected Panda device')
   .action(getWifi);
 cli
+  .command('is-white')
+  .description('Ask the connected Panda if it is a white Panda or not. Outputs "true" or "false"')
+  .action(isWhite);
+cli
   .command('is-grey')
   .description('Ask the connected Panda if it is a grey Panda or not. Outputs "true" or "false"')
   .action(isGrey);
+cli
+  .command('is-black')
+  .description('Ask the connected Panda if it is a black Panda or not. Outputs "true" or "false"')
+  .action(isBlack);
+cli
+  .command('has-obd')
+  .description('Ask the connected Panda if it has an OBD port connection or not. Outputs "true" or "false"')
+  .action(hasObd);
+cli
+  .command('obd <connected>')
+  .description('Connect CAN bus 1 (zero-based numbering) to the OBD port (if supported and parameter is "true"')
+  .action(setObd);
 cli
   .command('safety <mode>')
   .description('Set the current safety mode')
@@ -78,9 +94,39 @@ async function getSecret () {
   console.log(result);
 }
 
+async function isWhite () {
+  var panda = await setupPanda();
+  var result = await panda.isWhite();
+  console.log('is white:', result);
+}
+
 async function isGrey () {
   var panda = await setupPanda();
   var result = await panda.isGrey();
+  console.log('is grey:', result);
+}
+
+async function isBlack () {
+  var panda = await setupPanda();
+  var result = await panda.isBlack();
+  console.log('is black:', result);
+}
+
+async function hasObd () {
+  var panda = await setupPanda();
+  var result = await panda.hasObd();
+  console.log('has OBD port:', result);
+}
+
+async function setObd (connected, cmd) {
+  if (connected !== "true" && connected !== "false" && connected !== "0" && connected !== "1") {
+    console.error('Connected must be true or false');
+    return;
+  }
+  obd = connected === "true" || connected === "1";
+  console.log('OBD port:', obd ? 'connected' : 'disconnected');
+  var panda = await setupPanda();
+  var result = await panda.setObd(obd);
   console.log(result);
 }
 

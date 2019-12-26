@@ -116,8 +116,20 @@ panda.getDeviceMetadata()
 #### `Panda.getVersion()` -> `string`
 Requests the string version number, output will look something like `v1.0.1-11d45090-RELEASE`
 
+#### `Panda.isWhite()` -> `boolean`
+Query if the Panda device is a white Panda. Returns true if it is white.
+
 #### `Panda.isGrey()` -> `boolean`
-Query if the Panda device is a grey Panda or a normal Panda. Returns true if it is grey.
+Query if the Panda device is a grey Panda. Returns true if it is grey.
+
+#### `Panda.isBlack()` -> `boolean`
+Query if the Panda device is a black Panda. Returns true if it is black.
+
+#### `Panda.hasObd()` -> `boolean`
+Query if the Panda device has a connection to the OBD port. Returns true if it has an OBD port connection.
+
+#### `Panda.setObd(connected)` -> `void`
+Connect Panda device to the OBD port (if supported and parameter is `true`).
 
 #### `Panda.setSafetyMode(mode)` -> `void`
 Sets the safety mode on the Panda device.
@@ -125,7 +137,7 @@ Sets the safety mode on the Panda device.
  * `mode`: (*required* `SafetyMode`) The safety mode to enter. Must be a valid safety mode, safety modes are exposed as constants on the root of the library.
 
 ```js
-import { SAFETY_NOOUTPUT, SAFETY_HONDA, SAFETY_TOYOTA, SAFETY_HONDA_BOSCH, SAFETY_TOYOTA_NOLIMITS, SAFETY_ALLOUTPUT, SAFETY_ELM327 } from '@commaai/pandajs';
+import { SAFETY_NOOUTPUT, SAFETY_ELM327, SAFETY_ALLOUTPUT } from '@commaai/pandajs';
 ```
 
 ### Events

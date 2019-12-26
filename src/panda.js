@@ -167,22 +167,18 @@ export default class Panda {
     return await this.getType() > 2;
   }
   async setObd(obd) {
-    let buf = await this.vendorWrite('setObd', {
+    await this.vendorWrite('setObd', {
       request: 0xdb,
       value: obd ? 1 : 0,
       index: 0
     });
-
-    return buf.toString();
   }
   async setSafetyMode(mode) {
-    let buf = await this.vendorWrite('setSafetyMode', {
+    await this.vendorWrite('setSafetyMode', {
       request: 0xdc,
       value: mode,
       index: 0
     });
-
-    return buf.toString();
   }
 
   // i/o wrappers

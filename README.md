@@ -1,5 +1,6 @@
 # PandaJS
-Interract with your [panda OBD-II Dongle](https://shop.comma.ai/products/panda-obd-ii-dongle) from JavaScript.
+
+Interact with your [panda OBD-II Dongle](https://shop.comma.ai/products/panda-obd-ii-dongle) from JavaScript.
 
 Supports
  * [x] Browser
@@ -44,7 +45,7 @@ panda.disconnect();
 Creates a new Panda instance
 
 * `options` (*optional* object)
-  * `selectDevice`: (*optional* `function(devices, callback)`) A user defined function for selecting which available device to use, parameters are an array of discovered devices and a callback function. The method can either return the desired device, return a promise, or use the callback function. There is no timeout for this method, so make sure it eventually does one of those three things. *This option does nothing in browser mode since webusb has it's own UI for selecting the device.*
+  * `selectDevice`: (*optional* `function(devices, callback)`) A user-defined function for selecting which available device to use, parameters are an array of discovered devices and a callback function. The method can either return the desired device, return a promise, or use the callback function. There is no timeout for this method, so make sure it eventually does one of those three things. *This option does nothing in browser mode since webusb has it's own UI for selecting the device.*
   * `wifi`: (*optional* `boolean`) Enables wifi mode, communicates with the panda device over an already established wifi connection with it. This option will throw errors if you enable it in browser mode.
 
 ### Methods
@@ -64,7 +65,7 @@ panda.connect()
 ```
 
 #### `Panda.pause()` -> `boolean`
-Pauses reading in messages from the active connection. Returns true only if the stream was not already paused. While paused messages will queue up on the Panda device, however this queue has a limited size so pausing may result in missed messages.
+Pauses reading in messages from the active connection. Returns true only if the stream was not already paused. While paused messages will queue up on the Panda device, this queue has a limited size, so pausing may result in missed messages.
 
 #### `Panda.unpause()` -> `boolean`
 Pauses reading in messages from the active connection. Returns true only if the stream was paused.
@@ -73,7 +74,7 @@ Pauses reading in messages from the active connection. Returns true only if the 
 Alias for `unpause`.
 
 #### `Panda.isConnected()` -> `boolean`
-Returns true if the panda instance is currecntly connected to a USB device.
+Returns true if the panda instance is currently connected to a USB device.
 
 #### `Panda.isPaused()` -> `boolean`
 Returns true if the panda instance currently has message reading paused
@@ -93,7 +94,7 @@ Requests the current health of the Panda unit. Only available while connected, r
 #### `Panda.getDeviceMetadata()` -> `[string, string]`
 Requests both the serial number and secret from the Panda device. This is used internally to power `getSerialNumber` and `getSecret`.
 
-Returns an array with 2 items in, the serial number and then the secret.
+Returns an array with 2 items in, the serial number and the secret.
 
 #### `Panda.getSerialNumber()` -> `string`
 Requests the serial number.
@@ -129,12 +130,12 @@ Query if the Panda device is a black Panda. Returns true if it is black.
 Query if the Panda device has a connection to the OBD port. Returns true if it has an OBD port connection.
 
 #### `Panda.setObd(connected)` -> `void`
-Connect Panda device to the OBD port (if supported and parameter is `true`).
+Connect Panda device to the OBD port (if supported and the parameter is `true`).
 
 #### `Panda.setSafetyMode(mode)` -> `void`
 Sets the safety mode on the Panda device.
 
- * `mode`: (*required* `SafetyMode`) The safety mode to enter. Must be a valid safety mode, safety modes are exposed as constants on the root of the library.
+ * `mode`: (*required* `SafetyMode`) The safety mode to enter. It must be a valid safety mode. Safety modes are exposed as constants on the root of the library.
 
 ```js
 import { SAFETY_NOOUTPUT, SAFETY_ELM327, SAFETY_ALLOUTPUT } from '@commaai/pandajs';
@@ -177,7 +178,7 @@ Register a handler to run when disconnecting from a Panda device. Returns an `un
 This package ships with 2 CLI tools. Check the `--help` on each to see all of their options.
 
 #### `dump-can`
-This is used to dump metadata about the incoming CAN messages, or output the entire messages with `-a`.
+This is used to dump metadata about the incoming CAN messages or output all messages with `-a`.
 
 Examples:
 ```bash

@@ -45,3 +45,10 @@ py/dist/
 .test-env
 py/build/
 /lib/
+
+# IDE files
+.idea
+.vscode*
+.atom
+*.swp
+*.swo

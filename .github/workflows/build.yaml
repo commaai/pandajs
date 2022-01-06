@@ -16,7 +16,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
-          yarn install
-          yarn add usb
+          yarn install --ignore-scripts
+          yarn add --ignore-scripts usb
       - run: yarn build
       - run: yarn test

@@ -121,10 +121,9 @@ export default class Panda {
   }
 
   async nextMessage() {
-    let result = null;
     let attempts = 0;
 
-    while (result === null) {
+    while (true) {
       try {
         return await this.bulkRead(1);
       } catch (err) {

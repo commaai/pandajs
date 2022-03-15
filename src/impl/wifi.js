@@ -30,12 +30,12 @@ export default class Panda {
   }
   async connectToTCP() {
     return new Promise((resolve, reject) => {
-      var fail = (err) => {
+      const fail = (err) => {
         this.socket = null;
         ErrorEvent.broadcast(this, err);
         reject(err);
       };
-      var succeed = () => {
+      const succeed = () => {
         this.socket.off('close', fail);
         this.socket.off('error', fail);
         resolve();
@@ -69,9 +69,9 @@ export default class Panda {
   }
 
   async vendorRequest(data, length) {
-    var data = await this.controlRead(REQUEST_OUT, data.request, data.value, data.index, length);
+    const response = await this.controlRead(REQUEST_OUT, data.request, data.value, data.index, length);
     return {
-      data: Buffer.from(data),
+      data: Buffer.from(response),
       status: "ok" // hack, find out when it's actually ok
     };
   }
@@ -121,8 +121,8 @@ export default class Panda {
   }
 
   async nextMessage() {
-    var result = null;
-    var attempts = 0;
+    let result = null;
+    let attempts = 0;
 
     while (result === null) {
       try {
@@ -170,12 +170,12 @@ export default class Panda {
 }
 
 function once (event, handler) {
-  var unlisten = event(onceHandler);
-
-  return unlisten;
+  const unlisten = event(onceHandler);
 
   function onceHandler() {
     unlisten();
     handler.apply(this, arguments);
   }
+
+  return unlisten;
 }

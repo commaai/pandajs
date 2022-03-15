@@ -53,7 +53,7 @@ export default class Panda {
     }
     await this.device.connect();
 
-    var serialNumber = await this.getSerialNumber();
+    const serialNumber = await this.getSerialNumber();
     this.connectHandler(serialNumber);
 
     return serialNumber;
@@ -69,7 +69,7 @@ export default class Panda {
     return this.unpause();
   }
   async pause() {
-    var wasPaused = this.isPaused();
+    const wasPaused = this.isPaused();
     this.paused = true;
 
     return !wasPaused;
@@ -78,7 +78,7 @@ export default class Panda {
     return this.unpause();
   }
   async unpause() {
-    var wasPaused = this.isPaused();
+    const wasPaused = this.isPaused();
     if (!wasPaused) {
       return false;
     }
@@ -129,11 +129,11 @@ export default class Panda {
     return [serial.toString(), secret.toString()];
   }
   async getSerialNumber() {
-    var [serial, secret] = await this.getDeviceMetadata();
+    const [serial, secret] = await this.getDeviceMetadata();
     return serial;
   }
   async getSecret() {
-    var [serial, secret] = await this.getDeviceMetadata();
+    const [serial, secret] = await this.getDeviceMetadata();
     return secret;
   }
   async getVersion() {
@@ -225,7 +225,7 @@ export default class Panda {
       return this.flushEvent;
     }
 
-    var unlisten = raf(this.flushMessageQueue);
+    const unlisten = raf(this.flushMessageQueue);
 
     this.flushEvent = () => {
       raf.cancel(unlisten);

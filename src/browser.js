@@ -24,7 +24,7 @@ export const SAFETY_HONDA_BOSCH_HARNESS = 20;
 export default function Panda (options) {
   options = options || {};
 
-  var device = new PandaDevice(options, navigator.usb);
+  const device = new PandaDevice(options, navigator.usb);
   options.device = device;
   return new PandaAPI(options);
 }

@@ -8,7 +8,7 @@ const desiredDeviceString = 'it worked';
 const deviceList = [false, false, desiredDeviceString, false];
 
 test('selectDevice can return any way', async function (t) {
-  var panda = new PandaNode({
+  let panda = new PandaNode({
     selectDevice: selectDeviceReturn
   });
   t.equals(await panda.selectDevice(deviceList), desiredDeviceString, 'works when returning directly');

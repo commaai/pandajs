@@ -53,12 +53,11 @@ export default class Panda {
       index: data.index
     };
 
-    var result = await this.device.controlTransferIn(controlParams, length);
-    result = {
+    const result = await this.device.controlTransferIn(controlParams, length);
+    return {
       data: Buffer.from(result.data.buffer),
       status: result.status
     };
-    return result;
   }
 
   async vendorWrite(data, length) {
@@ -89,8 +88,8 @@ export default class Panda {
   }
 
   async nextMessage() {
-    var result = null;
-    var attempts = 0;
+    let result = null;
+    let attempts = 0;
 
     while (result === null) {
       try {

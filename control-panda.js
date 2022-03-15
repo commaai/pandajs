@@ -56,7 +56,7 @@ if (!process.argv.slice(2).length) {
   cli.help();
 }
 
-var safetyModes = [];
+const safetyModes = [];
 Object.keys(PandaLib).forEach(function (key) {
   if (key.startsWith('SAFETY_')) {
     safetyModes.push(key.substr(7).toLowerCase());
@@ -66,7 +66,7 @@ Object.keys(PandaLib).forEach(function (key) {
 cli.parse(process.argv);
 
 async function setupPanda () {
-  var panda = new Panda({
+  const panda = new Panda({
     wifi: cli.wifi
   });
 
@@ -83,37 +83,37 @@ async function setupPanda () {
 
 // command implementations
 async function getVersion () {
-  var panda = await setupPanda();
-  var result = await panda.getVersion();
+  const panda = await setupPanda();
+  const result = await panda.getVersion();
   console.log(result);
 }
 async function getSecret () {
-  var panda = await setupPanda();
-  var result = await panda.getSecret();
+  const panda = await setupPanda();
+  const result = await panda.getSecret();
   console.log(result);
 }
 
 async function isWhite () {
-  var panda = await setupPanda();
-  var result = await panda.isWhite();
+  const panda = await setupPanda();
+  const result = await panda.isWhite();
   console.log('is white:', result);
 }
 
 async function isGrey () {
-  var panda = await setupPanda();
-  var result = await panda.isGrey();
+  const panda = await setupPanda();
+  const result = await panda.isGrey();
   console.log('is grey:', result);
 }
 
 async function isBlack () {
-  var panda = await setupPanda();
-  var result = await panda.isBlack();
+  const panda = await setupPanda();
+  const result = await panda.isBlack();
   console.log('is black:', result);
 }
 
 async function hasObd () {
-  var panda = await setupPanda();
-  var result = await panda.hasObd();
+  const panda = await setupPanda();
+  const result = await panda.hasObd();
   console.log('has OBD port:', result);
 }
 
@@ -124,8 +124,8 @@ async function setObd (connected, cmd) {
   }
   obd = connected === "true" || connected === "1";
   console.log('OBD port:', obd ? 'connected' : 'disconnected');
-  var panda = await setupPanda();
-  var result = await panda.setObd(obd);
+  const panda = await setupPanda();
+  const result = await panda.setObd(obd);
   console.log(result);
 }
 
@@ -134,21 +134,21 @@ async function setSafetyMode (mode, cmd) {
     console.error('Safety mode must be one of the following:', '\n\t' + safetyModes.join('\n\t'));
     return;
   }
-  var modeConst = PandaLib['SAFETY_' + mode.toUpperCase()];
+  const modeConst = PandaLib['SAFETY_' + mode.toUpperCase()];
   console.log('Activing safety mode:', mode, '(0x' + modeConst.toString(16) + ')');
-  var panda = await setupPanda();
-  var result = await panda.setSafetyMode(modeConst);
+  const panda = await setupPanda();
+  const result = await panda.setSafetyMode(modeConst);
   console.log(result);
 }
 
 async function getWifi () {
-  var panda = await setupPanda();
-  var result = await panda.getDeviceMetadata();
+  const panda = await setupPanda();
+  const result = await panda.getDeviceMetadata();
   console.log('SID: panda-' + result[0]);
   console.log('Password:', result[1]);
 }
 
 async function getHealth () {
-  var panda = await setupPanda();
+  const panda = await setupPanda();
   console.log(await panda.getHealth());
 }

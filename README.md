@@ -19,7 +19,7 @@ or
 import Panda from '@commaai/pandajs';
 
 // create instance
-var panda = new Panda();
+const panda = new Panda();
 
 // register listener
 panda.onMessage((msg) => {

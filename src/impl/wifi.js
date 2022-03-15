@@ -158,14 +158,14 @@ export default class Panda {
   }
 
   async bulkRead(endpoint: Number, timeoutMillis: Number = 0) {
-      const promise = this.nextIncomingMessage();
+    const promise = this.nextIncomingMessage();
 
-      const buf = Buffer.alloc(4);
-      buf.writeUInt16LE(endpoint, 0);
-      buf.writeUInt16LE(0, 2);
-      this.socket.write(buf);
+    const buf = Buffer.alloc(4);
+    buf.writeUInt16LE(endpoint, 0);
+    buf.writeUInt16LE(0, 2);
+    this.socket.write(buf);
 
-      return promise;
+    return promise;
   }
 }
 

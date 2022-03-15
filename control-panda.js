@@ -3,7 +3,6 @@
 const cli = require('commander');
 const PandaLib = require('./lib');
 const Panda = PandaLib.default;
-const wait = require('./src/delay');
 const package = require('./package');
 
 cli

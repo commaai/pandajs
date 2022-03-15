@@ -1,11 +1,8 @@
-import USB from 'usb';
-import { packCAN, unpackCAN } from 'can-message';
+import { packCAN } from 'can-message';
 import Event from 'weakmap-event';
 import { partial } from 'ap';
 import wait from '../delay';
-import isPromise from 'is-promise';
 import net from 'net';
-import dgram from 'dgram';
 
 const PANDA_MESSAGE_ENDPOINT_NUMBER = 1;
 const PANDA_HOST = '192.168.0.10';

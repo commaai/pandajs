@@ -1,4 +1,3 @@
-
 export default function PandaUSB (options) {
   if (require('is-browser')) {
     if (options.wifi) {

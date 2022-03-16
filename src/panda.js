@@ -97,22 +97,14 @@ export default class Panda {
       index: 0
     }, 13);
 
-    let voltage = buf.readUInt32LE(0) / 1000;
-    let current = buf.readUInt32LE(4) / 1000;
-    let isStarted = buf.readInt8(8) === 1;
-    let controlsAreAllowed = buf.readInt8(9) === 1;
-    let isGasInterceptorDetector = buf.readInt8(10) === 1;
-    let isStartSignalDetected = buf.readInt8(11) === 1;
-    let isStartedAlt = buf.readInt8(12) === 1;
-
     return {
-      voltage,
-      current,
-      isStarted,
-      controlsAreAllowed,
-      isGasInterceptorDetector,
-      isStartSignalDetected,
-      isStartedAlt
+      voltage: buf.readUInt32LE(0) / 1000,
+      current: buf.readUInt32LE(4) / 1000,
+      isStarted: buf.readInt8(8) === 1,
+      controlsAreAllowed: buf.readInt8(9) === 1,
+      isGasInterceptorDetector: buf.readInt8(10) === 1,
+      isStartSignalDetected: buf.readInt8(11) === 1,
+      isStartedAlt: buf.readInt8(12) === 1
     };
   }
   async getDeviceMetadata() {

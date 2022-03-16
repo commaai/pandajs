@@ -148,12 +148,12 @@ export default class Panda {
         }
       });
       if (!endpoint) {
-        let err = new Error('PandaJS: nodeusb: transferIn failed to find endpoint interface ' + endpointNumber);
+        const err = new Error('PandaJS: nodeusb: transferIn failed to find endpoint interface ' + endpointNumber);
         ErrorEvent.broadcast(this, err);
         return reject(err);
       }
       if (endpoint.direction !== 'in') {
-        let err = new Error('PandaJS: nodeusb: endpoint interface is ' + endpoint.direction + ' instead of in');
+        const err = new Error('PandaJS: nodeusb: endpoint interface is ' + endpoint.direction + ' instead of in');
         ErrorEvent.broadcast(this, err);
         return reject(err);
       }

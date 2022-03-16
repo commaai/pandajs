@@ -91,7 +91,7 @@ export default class Panda {
 
   // vendor API methods
   async getHealth() {
-    let buf = await this.vendorRequest('health', {
+    const buf = await this.vendorRequest('health', {
       request: 0xd2,
       value: 0,
       index: 0
@@ -116,15 +116,15 @@ export default class Panda {
     };
   }
   async getDeviceMetadata() {
-    let buf = await this.vendorRequest('getDeviceMetadata', {
+    const buf = await this.vendorRequest('getDeviceMetadata', {
       request: 0xd0,
       value: 0,
       index: 0
     }, 0x20);
 
-    let serial = buf.slice(0, 0x10); // serial is the wifi style serial
-    let secret = buf.slice(0x10, 0x10 + 10);
-    let hashSig = buf.slice(0x1c);
+    const serial = buf.slice(0, 0x10); // serial is the wifi style serial
+    const secret = buf.slice(0x10, 0x10 + 10);
+    const hashSig = buf.slice(0x1c);
 
     return [serial.toString(), secret.toString()];
   }
@@ -137,7 +137,7 @@ export default class Panda {
     return secret;
   }
   async getVersion() {
-    let buf = await this.vendorRequest('getVersion', {
+    const buf = await this.vendorRequest('getVersion', {
       request: 0xd6,
       value: 0,
       index: 0
@@ -146,7 +146,7 @@ export default class Panda {
     return buf.toString();
   }
   async getType() {
-    let buf = await this.vendorRequest('getType', {
+    const buf = await this.vendorRequest('getType', {
       request: 0xc1,
       value: 0,
       index: 0
@@ -184,7 +184,7 @@ export default class Panda {
   // i/o wrappers
   async vendorRequest (event, controlParams, length) {
     try {
-      let result = await this.device.vendorRequest(controlParams, length);
+      const result = await this.device.vendorRequest(controlParams, length);
 
       return result.data;
     } catch (err) {
@@ -197,7 +197,7 @@ export default class Panda {
       message = Buffer.from([]);
     }
     try {
-      let result = await this.device.vendorWrite(controlParams, message);
+      const result = await this.device.vendorWrite(controlParams, message);
 
       return result.data;
     } catch (err) {
@@ -238,7 +238,7 @@ export default class Panda {
     this.flushEvent();
 
     if (this.needsFlush && this.messageQueue.length) {
-      let messageQueue = this.messageQueue;
+      const messageQueue = this.messageQueue;
       this.messageQueue = [];
       this.needsFlush = false;
       MessageEvent.broadcast(this, messageQueue);
@@ -265,9 +265,9 @@ export default class Panda {
     this.isReading = true;
 
     for (let i = 0; i < MAX_MESSAGE_QUEUE; ++i) {
-      let data = await this.device.nextMessage();
-      let receiptTime = now() / 1000
-      let canMessages = unpackCAN(data);
+      const data = await this.device.nextMessage();
+      const receiptTime = now() / 1000
+      const canMessages = unpackCAN(data);
       if (!canMessages.length) {
         await wait(1);
         continue;

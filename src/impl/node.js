@@ -1,8 +1,7 @@
 import USB from 'usb';
-import { packCAN, unpackCAN } from 'can-message';
+import { packCAN } from 'can-message';
 import Event from 'weakmap-event';
 import { partial } from 'ap';
-import now from 'performance-now';
 import wait from '../delay';
 import isPromise from 'is-promise';
 
@@ -26,9 +25,7 @@ export default class Panda {
   }
 
   async findDevice() {
-    var devices = USB.getDeviceList();
-
-    devices = devices.filter((device) => {
+    const devices = USB.getDeviceList().filter((device) => {
       return device.deviceDescriptor.idVendor === PANDA_VENDOR_ID;
     });
 
@@ -36,7 +33,7 @@ export default class Panda {
   }
   async selectDevice(devices) {
     return new Promise((resolve, reject) => {
-      var result = this.selectDeviceMethod(devices, resolve);
+      const result = this.selectDeviceMethod(devices, resolve);
 
       if (result) {
         if (isPromise(result)) {
@@ -141,7 +138,7 @@ export default class Panda {
     endpointNumber = endpointNumber | 0x80;
 
     return new Promise(async (resolve, reject) => {
-      var endpoint = null;
+      let endpoint = null;
       this.device.interfaces.some(iface => {
         const epoint = iface.endpoint(endpointNumber);
 
@@ -151,19 +148,19 @@ export default class Panda {
         }
       });
       if (!endpoint) {
-        let err = new Error('PandaJS: nodeusb: transferIn failed to find endpoint interface ' + endpointNumber);
+        const err = new Error('PandaJS: nodeusb: transferIn failed to find endpoint interface ' + endpointNumber);
         ErrorEvent.broadcast(this, err);
         return reject(err);
       }
       if (endpoint.direction !== 'in') {
-        let err = new Error('PandaJS: nodeusb: endpoint interface is ' + endpoint.direction + ' instead of in');
+        const err = new Error('PandaJS: nodeusb: endpoint interface is ' + endpoint.direction + ' instead of in');
         ErrorEvent.broadcast(this, err);
         return reject(err);
       }
-      var data = Buffer.from([]);
-      while (data.length === 0) {
+      let data;
+      do {
         data = await this.endpointTransfer(endpoint, length);
-      }
+      } while (data.length === 0);
       resolve(data);
     });
   }
@@ -180,10 +177,9 @@ export default class Panda {
   }
 
   async nextMessage() {
-    var result = null;
-    var attempts = 0;
+    let attempts = 0;
 
-    while (result === null) {
+    while (true) {
       try {
         return await this.transferIn(1, BUFFER_SIZE);
       } catch (err) {

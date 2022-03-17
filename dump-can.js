@@ -15,7 +15,7 @@ cli
   .option('-i, --index <i>', 'Choose a different connected panda than the first one (zero indexed)', parseInt)
   .parse(process.argv);
 
-var panda = new Panda({
+const panda = new Panda({
   wifi: cli.wifi,
   selectDevice: (devices) => {
     return devices[Math.min(devices.length, cli.index || 0)];
@@ -62,7 +62,7 @@ connectAndRun();
 async function connectAndRun () {
   await panda.connect();
   if (cli.health) {
-    var health = await panda.getHealth();
+    const health = await panda.getHealth();
     console.log(health);
     console.log('Connect finished, waiting then reading all messages...');
     await wait(1000);

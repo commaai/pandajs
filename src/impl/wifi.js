@@ -1,11 +1,8 @@
-import USB from 'usb';
-import { packCAN, unpackCAN } from 'can-message';
+import { packCAN } from 'can-message';
 import Event from 'weakmap-event';
 import { partial } from 'ap';
 import wait from '../delay';
-import isPromise from 'is-promise';
 import net from 'net';
-import dgram from 'dgram';
 
 const PANDA_MESSAGE_ENDPOINT_NUMBER = 1;
 const PANDA_HOST = '192.168.0.10';
@@ -33,12 +30,12 @@ export default class Panda {
   }
   async connectToTCP() {
     return new Promise((resolve, reject) => {
-      var fail = (err) => {
+      const fail = (err) => {
         this.socket = null;
         ErrorEvent.broadcast(this, err);
         reject(err);
       };
-      var succeed = () => {
+      const succeed = () => {
         this.socket.off('close', fail);
         this.socket.off('error', fail);
         resolve();
@@ -72,9 +69,9 @@ export default class Panda {
   }
 
   async vendorRequest(data, length) {
-    var data = await this.controlRead(REQUEST_OUT, data.request, data.value, data.index, length);
+    const response = await this.controlRead(REQUEST_OUT, data.request, data.value, data.index, length);
     return {
-      data: Buffer.from(data),
+      data: Buffer.from(response),
       status: "ok" // hack, find out when it's actually ok
     };
   }
@@ -124,10 +121,9 @@ export default class Panda {
   }
 
   async nextMessage() {
-    var result = null;
-    var attempts = 0;
+    let attempts = 0;
 
-    while (result === null) {
+    while (true) {
       try {
         return await this.bulkRead(1);
       } catch (err) {
@@ -161,24 +157,24 @@ export default class Panda {
   }
 
   async bulkRead(endpoint: Number, timeoutMillis: Number = 0) {
-      const promise = this.nextIncomingMessage();
+    const promise = this.nextIncomingMessage();
 
-      const buf = Buffer.alloc(4);
-      buf.writeUInt16LE(endpoint, 0);
-      buf.writeUInt16LE(0, 2);
-      this.socket.write(buf);
+    const buf = Buffer.alloc(4);
+    buf.writeUInt16LE(endpoint, 0);
+    buf.writeUInt16LE(0, 2);
+    this.socket.write(buf);
 
-      return promise;
+    return promise;
   }
 }
 
 function once (event, handler) {
-  var unlisten = event(onceHandler);
-
-  return unlisten;
+  const unlisten = event(onceHandler);
 
   function onceHandler() {
     unlisten();
     handler.apply(this, arguments);
   }
+
+  return unlisten;
 }

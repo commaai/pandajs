@@ -1,4 +1,4 @@
-import { packCAN, unpackCAN } from 'can-message';
+import { unpackCAN } from 'can-message';
 import Event from 'weakmap-event';
 import { partial } from 'ap';
 import now from 'performance-now';
@@ -53,7 +53,7 @@ export default class Panda {
     }
     await this.device.connect();
 
-    var serialNumber = await this.getSerialNumber();
+    const serialNumber = await this.getSerialNumber();
     this.connectHandler(serialNumber);
 
     return serialNumber;
@@ -69,7 +69,7 @@ export default class Panda {
     return this.unpause();
   }
   async pause() {
-    var wasPaused = this.isPaused();
+    const wasPaused = this.isPaused();
     this.paused = true;
 
     return !wasPaused;
@@ -78,7 +78,7 @@ export default class Panda {
     return this.unpause();
   }
   async unpause() {
-    var wasPaused = this.isPaused();
+    const wasPaused = this.isPaused();
     if (!wasPaused) {
       return false;
     }
@@ -91,53 +91,45 @@ export default class Panda {
 
   // vendor API methods
   async getHealth() {
-    let buf = await this.vendorRequest('health', {
+    const buf = await this.vendorRequest('health', {
       request: 0xd2,
       value: 0,
       index: 0
     }, 13);
 
-    let voltage = buf.readUInt32LE(0) / 1000;
-    let current = buf.readUInt32LE(4) / 1000;
-    let isStarted = buf.readInt8(8) === 1;
-    let controlsAreAllowed = buf.readInt8(9) === 1;
-    let isGasInterceptorDetector = buf.readInt8(10) === 1;
-    let isStartSignalDetected = buf.readInt8(11) === 1;
-    let isStartedAlt = buf.readInt8(12) === 1;
-
     return {
-      voltage,
-      current,
-      isStarted,
-      controlsAreAllowed,
-      isGasInterceptorDetector,
-      isStartSignalDetected,
-      isStartedAlt
+      voltage: buf.readUInt32LE(0) / 1000,
+      current: buf.readUInt32LE(4) / 1000,
+      isStarted: buf.readInt8(8) === 1,
+      controlsAreAllowed: buf.readInt8(9) === 1,
+      isGasInterceptorDetector: buf.readInt8(10) === 1,
+      isStartSignalDetected: buf.readInt8(11) === 1,
+      isStartedAlt: buf.readInt8(12) === 1
     };
   }
   async getDeviceMetadata() {
-    let buf = await this.vendorRequest('getDeviceMetadata', {
+    const buf = await this.vendorRequest('getDeviceMetadata', {
       request: 0xd0,
       value: 0,
       index: 0
     }, 0x20);
 
-    let serial = buf.slice(0, 0x10); // serial is the wifi style serial
-    let secret = buf.slice(0x10, 0x10 + 10);
-    let hashSig = buf.slice(0x1c);
+    const serial = buf.slice(0, 0x10); // serial is the wifi style serial
+    const secret = buf.slice(0x10, 0x10 + 10);
+    const hashSig = buf.slice(0x1c);
 
     return [serial.toString(), secret.toString()];
   }
   async getSerialNumber() {
-    var [serial, secret] = await this.getDeviceMetadata();
+    const [serial, secret] = await this.getDeviceMetadata();
     return serial;
   }
   async getSecret() {
-    var [serial, secret] = await this.getDeviceMetadata();
+    const [serial, secret] = await this.getDeviceMetadata();
     return secret;
   }
   async getVersion() {
-    let buf = await this.vendorRequest('getVersion', {
+    const buf = await this.vendorRequest('getVersion', {
       request: 0xd6,
       value: 0,
       index: 0
@@ -146,7 +138,7 @@ export default class Panda {
     return buf.toString();
   }
   async getType() {
-    let buf = await this.vendorRequest('getType', {
+    const buf = await this.vendorRequest('getType', {
       request: 0xc1,
       value: 0,
       index: 0
@@ -184,7 +176,7 @@ export default class Panda {
   // i/o wrappers
   async vendorRequest (event, controlParams, length) {
     try {
-      let result = await this.device.vendorRequest(controlParams, length);
+      const result = await this.device.vendorRequest(controlParams, length);
 
       return result.data;
     } catch (err) {
@@ -197,7 +189,7 @@ export default class Panda {
       message = Buffer.from([]);
     }
     try {
-      let result = await this.device.vendorWrite(controlParams, message);
+      const result = await this.device.vendorWrite(controlParams, message);
 
       return result.data;
     } catch (err) {
@@ -225,7 +217,7 @@ export default class Panda {
       return this.flushEvent;
     }
 
-    var unlisten = raf(this.flushMessageQueue);
+    const unlisten = raf(this.flushMessageQueue);
 
     this.flushEvent = () => {
       raf.cancel(unlisten);
@@ -238,7 +230,7 @@ export default class Panda {
     this.flushEvent();
 
     if (this.needsFlush && this.messageQueue.length) {
-      let messageQueue = this.messageQueue;
+      const messageQueue = this.messageQueue;
       this.messageQueue = [];
       this.needsFlush = false;
       MessageEvent.broadcast(this, messageQueue);
@@ -265,9 +257,9 @@ export default class Panda {
     this.isReading = true;
 
     for (let i = 0; i < MAX_MESSAGE_QUEUE; ++i) {
-      let data = await this.device.nextMessage();
-      let receiptTime = now() / 1000
-      let canMessages = unpackCAN(data);
+      const data = await this.device.nextMessage();
+      const receiptTime = now() / 1000
+      const canMessages = unpackCAN(data);
       if (!canMessages.length) {
         await wait(1);
         continue;

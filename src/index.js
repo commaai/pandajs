@@ -25,7 +25,7 @@ export default function Panda (options) {
   options = options || {};
   options.selectDevice = options.selectDevice || selectFirstDevice;
 
-  var device = new PandaDevice(options);
+  const device = new PandaDevice(options);
   options.device = device;
   return new PandaAPI(options);
 }
